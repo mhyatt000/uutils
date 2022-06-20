@@ -54,7 +54,7 @@ def nms(*, preds=None, bboxes=None, logits=None, size=None, conf_thres=0.5, iou_
     cls = set(preds[..., -1].flatten().tolist())
     for c in cls:
 
-        isc = preds[..., -1] == c
+         isc = preds[..., -1] == c
         x = preds[isc]
         keep = torchvision.ops.nms(x[..., :4], x[..., 4], iou_thres)
         result += x[keep].reshape(-1, 6).tolist()

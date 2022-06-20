@@ -1,4 +1,4 @@
-'''useful utils for bboxes'''
+"""useful utils for bboxes"""
 "borrowed some functions from d2l.ai"
 
 import os
@@ -19,6 +19,16 @@ from torchvision.transforms import functional as F
 from transformers import YolosFeatureExtractor, YolosForObjectDetection
 
 
+def xyxy2xywh(boxes):
+    """convert from xyxy to x1y1 wh"""
+    """its the coco standard"""
+
+    x1, y1, x2, y2 = boxes.unbind(-1)
+    w = x2 - x1
+    h = y2 - y1
+    return torch.stack((x1, y1, w, h), axis=-1)
+
+
 def xyxy2ccwh(boxes):
     """Convert from (upper-left, lower-right) to (center, width, height)."""
 
@@ -33,18 +43,17 @@ def xyxy2ccwh(boxes):
 def ccwh2xyxy(boxes):
     """Convert from (center, width, height) to (upper-left, lower-right)."""
 
-    cx, cy, w, h = boxes.unbind(-1) 
+    cx, cy, w, h = boxes.unbind(-1)
     b = [(cx - 0.5 * w), (cy - 0.5 * h), (cx + 0.5 * w), (cy + 0.5 * h)]
     return torch.stack(b, dim=-1)
 
 
-
 def rescale(boxes, size):
-    'rescale from yolo output to xyxy standard'
+    "rescale from yolo output to xyxy standard"
 
-    h,w,*_ = size
+    h, w, *_ = size
     b = ccwh2xyxy(boxes)
-    b = b * torch.Tensor([w, h, w, h]) 
+    b = b * torch.Tensor([w, h, w, h])
     return b
 
 
@@ -223,9 +232,8 @@ def multibox_target(anchors, labels):
 
     for i in range(batch_size):
         label = labels[i, :, :]
-        anchors_bbox_map = assign_anchor_to_bbox(
-        label[:, 1:], anchors, device)
-        bbox_mask = ((anchors_bbox_map >= 0).float().unsqueeze(-1)).repeat( 1, 4)
+        anchors_bbox_map = assign_anchor_to_bbox(label[:, 1:], anchors, device)
+        bbox_mask = ((anchors_bbox_map >= 0).float().unsqueeze(-1)).repeat(1, 4)
 
     # Initialize class labels and assigned bounding box coordinates with zeros
     class_labels = torch.zeros(num_anchors, dtype=torch.long, device=device)
@@ -268,6 +276,7 @@ def mean_ap(clss):
     for cls in clss:
         pass
 
+
 def main():
 
     img = plt.imread("../catdog.jpg")
@@ -293,21 +302,23 @@ def main():
     plt.show()
 
     labels = multibox_target(anchors.unsqueeze(dim=0), ground_truth.unsqueeze(dim=0))
-    
+
     anchors = torch.tensor(
-        [[0.1, 0.08, 0.52, 0.92],
-        [0.08, 0.2, 0.56, 0.95],
-        [0.15, 0.3, 0.62, 0.91],
-        [0.55, 0.2, 0.9, 0.88]]
+        [
+            [0.1, 0.08, 0.52, 0.92],
+            [0.08, 0.2, 0.56, 0.95],
+            [0.15, 0.3, 0.62, 0.91],
+            [0.55, 0.2, 0.9, 0.88],
+        ]
     )
     offset_preds = torch.tensor([0] * anchors.numel())
     cls_probs = torch.tensor(
-            [[0] * 4,  # Predicted background likelihood
+        [
+            [0] * 4,  # Predicted background likelihood
             [0.9, 0.8, 0.7, 0.1],  # Predicted dog likelihood
-            [0.1, 0.2, 0.3, 0.9]]  # Predicted cat likelihood
-    )  
-
-
+            [0.1, 0.2, 0.3, 0.9],
+        ]  # Predicted cat likelihood
+    )
 
     quit()
 
