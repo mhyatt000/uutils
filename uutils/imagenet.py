@@ -4,11 +4,9 @@ import json
 import os
 
 import pandas as pd
+import files
 
-home = os.path.expanduser("~")
-root = os.path.join(home, "CS/.datasets/IMAGENET")
-
-def build_synset_map(path=root):
+def build_synset_map(path):
     """make a map for converting id to label"""
 
     with open(os.path.join(path, "LOC_synset_mapping.txt"), "r") as file:
@@ -25,12 +23,12 @@ def build_synset_map(path=root):
         json.dump(data, file)
 
 
-def get_synset_map(path=root):
+def get_synset_map(path):
     with open(os.path.join(path, "synset_map.json"), "r") as file:
         return json.load(file)
 
 
-def build_solution_map(path=root):
+def build_solution_map(path):
     with open(os.path.join(path, "LOC_val_solution.csv"), "r") as file:
         data = file.read().split("\n")[1:]
 
@@ -52,17 +50,34 @@ def build_solution_map(path=root):
         json.dump(data, file)
 
 
-def get_solution_map(path=root):
+def get_solution_map(path):
     with open(os.path.join(path, "solution_map.json"), "r") as file:
         return json.load(file)
 
-def write_eval(*, name, path=root, acc=None, dt=None):
-    assert (acc or dt)
-    data = {'accuracy':acc, 'dt':dt}
-    with open(os.path.join(path,'results',f'{name}.json'),'w') as file:
-        json.dump(data,file)
 
-def read_eval(*, name, path=root):
-    with open(os.path.join(path,'results',f'{name}.json'),'r') as file:
+def write_eval(*, name, path, acc=None, dt=None):
+    assert acc or dt
+    data = {"accuracy": acc, "dt": dt}
+    with open(os.path.join(path, "results", f"{name}.json"), "w") as file:
+        json.dump(data, file)
+
+
+def read_eval(*, name, path):
+    with open(os.path.join(path, "results", f"{name}.json"), "r") as file:
         return json.load(file)
 
+
+def has_results(*, name, path):
+
+    name = name.replace("/", "_")
+    path = os.path.join(path, "results")
+    results = [r.split(".")[0] for r in os.listdir(path)]
+    return name in results
+
+
+def ignore(*, name, path):
+    files.append(name.replace("/", "_"), os.path.join(path, "ignore.txt"))
+
+
+def has_ignore(*, name, path):
+    return name.replace("/", "_") in files.readlines(os.path.join(path, "ignore.txt"))

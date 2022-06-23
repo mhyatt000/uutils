@@ -7,8 +7,8 @@ import torch
 import torchmetrics
 import torchvision
 
-from . import bbox as bb
-from . import tools
+# from . import bbox as bb
+# from . import tools
 
 def topn_acc(src, tgt, *, n=5):
     """src,tgt are only class predictions"""
@@ -60,3 +60,33 @@ def nms(*, preds=None, bboxes=None, logits=None, size=None, conf_thres=0.5, iou_
         result += x[keep].reshape(-1, 6).tolist()
     result = torch.Tensor(result)
     return result
+
+def mean_ap():
+
+    import json
+    import os
+    path = '/Users/matthewhyatt/cs/ssl/tunnelvision'
+    with open(os.path.join(path,'val_dt.json'),'r') as file:
+        dt = json.load(file)
+    with open(os.path.join(path,'val_gt.json'),'r') as file:
+        gt = json.load(file)
+
+    print(dt[0] )
+    imid = 'image_id' 
+    cid = 'category_id'
+
+    imgids = set([d[imid] for d in dt])
+    classes = set([d[cid] for d in dt])
+
+    gt = [g for g in gt if g[imid] in imgids]
+
+    combos = [(id,c) for id in imgids for c in classes]
+    for id,c in combos:
+        a = [d for d in dt if d[imid]==id and d[cid]==c]
+        b = [g for g in gt if g[imid]==id and g[cid]==c]
+
+        
+
+# mean_ap()
+
+
