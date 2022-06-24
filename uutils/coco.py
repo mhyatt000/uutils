@@ -2,10 +2,10 @@ from pprint import pprint
 from pycocotools.coco import COCO
 
 
-def id2l():
+def id2l(root):
 
     dset = "val"
-    coco_path = "/Users/matthewhyatt/cs/.datasets/COCOdataset2017"
+    coco_path = f"{root}/COCOdataset2017"
     coco = COCO(f"{coco_path}/annotations/instances_val2017.json")
 
     catIds = coco.getCatIds()
