@@ -4,7 +4,7 @@ import json
 import os
 
 import pandas as pd
-import files
+from . import files
 
 def build_synset_map(path):
     """make a map for converting id to label"""
