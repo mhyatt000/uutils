@@ -1,8 +1,6 @@
 import functools
 import sys
 
-import transformers
-
 
 def stdout(file):
     def deco(func):
@@ -31,10 +29,10 @@ def repeat(n):
 
         return wrap
 
-    r0eturn deco
+    return deco
 
 def timer():
-    def deco(func)
+    def deco(func):
         @functools.wraps(func)
         def weap(*args, **kwargs):
 
@@ -47,3 +45,4 @@ def timer():
 
         return wrap
     return deco
+

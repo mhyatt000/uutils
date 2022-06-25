@@ -4,3 +4,4 @@ from . import val
 from . import imagenet
 from . import coco
 from . import files
+from . import deco
