@@ -74,14 +74,14 @@ class TheOne:
     pass
 
 
-def sleep(func=None, *, time=1):
+def sleep(func=None, *, t=1):
     """Sleep given amount of seconds before calling the function"""
 
     def deco(func):
         @functools.wraps(func)
         def wrap(*args, **kwargs):
 
-            time.sleep(time)
+            time.sleep(t)
             return func(*args, **kwargs)
 
         return wrap
