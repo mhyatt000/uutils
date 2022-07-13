@@ -9,7 +9,7 @@ def stdout(file):
         def wrap(*args, **kwargs):
 
             sys.stdout = open(file, "w")
-            result = func()
+            result = func(*args, **kwargs)
             sys.stdout.close()
             return result
 
@@ -111,4 +111,3 @@ def register(func):
 
     PLUGINS[func.__name__] = func
     return func
-
