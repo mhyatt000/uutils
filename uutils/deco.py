@@ -111,3 +111,21 @@ def register(func):
 
     PLUGINS[func.__name__] = func
     return func
+
+
+def keyquit(func):
+    """on keyboard interrupt, quit"""
+
+    def deco(func):
+        @functools.wraps(func)
+        def wrap(*args, **kwargs):
+
+            try:
+                result = func(*args, **kwargs)
+                return result
+            except KeyboardInterrupt:
+                print('KeyboardInterrupt')
+                quit()
+
+        return wrap
+    return deco if func is None else deco(func)
